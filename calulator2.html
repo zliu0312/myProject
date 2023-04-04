@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UFT-8">
+    <meta name="viewport" content="witdth=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script>
+// function  calHeart calculate functions without ()
+function calHeart(myFunction){
+// put number in numbers and symbol in symbol
+var numbers = [],
+    symbols = [],
+    j = 0;
+for ( var i = 0; i < myFunction.length; i++) {
+    if (['+','-','*','/'].findIndex((value) => value == myFunction[i]) != -1 && i != 0){  //when i=0 jump. eg. -1+1, -1 is first number 
+        numbers.push(Number(myFunction.slice(j,i)) ); //put number before symbol in list
+        symbols.push(myFunction.charAt(i));  // put symbol in list
+        j = i+1;
+    }
+    if (i == myFunction.length-1){
+        numbers.push(Number(myFunction.slice(j))); //put last number in list 
+    }
+}
+ // calculate *  / from left to right 
+ var i = 0
+var j = 0;
+while (symbols.findIndex((value) => value == "*" || value == "/") != -1){
+    i = symbols.findIndex((value) => value == "*" || value == "/");
+    if (symbols[i] == "*"){
+        j = numbers[i] * numbers[i+1];
+    } else {
+        j = numbers[i] / numbers[i+1];
+    }
+    numbers.splice(i,2,j); 
+    symbols.splice(i,1);
+    i = 0;
+}
+// calculate +- from left to right 
+var i = 0;
+var j = 0;
+while (symbols.findIndex((value) => value == "+" || value == "-") != -1){
+    i = symbols.findIndex((value) => value == "+" || value == "-");
+    if (symbols[i] == "+"){
+         j = numbers[i] + numbers[i+1]; 
+    } else {
+        j = numbers[i] - numbers[i+1];
+    }
+    numbers.splice(i,2,j);
+    symbols.splice(i,1);
+    i = 0;
+} 
+// Now only one number in numbers[] which is result
+return numbers[0];
+}
+// this is the end of function calHeart
+
+var Input = prompt('Enter your function!');
+var InputR = Input; //for final display
+// format arrangement
+Input = Input.replaceAll('x','*');
+Input = Input.replaceAll('÷','/');
+Input = Input.replaceAll(' ','');
+if (Input.split('(').length - 1 != Input.split(')').length - 1){
+    throw new Error(alert('Format not correct. \nRefresh the page and try again!'));
+}
+var j = Input.split('(').length 
+// find the inner () and calculat until there's no () in function
+for (var i = 0; i < j - 1;i++){
+    var end = Input.indexOf(')');
+    var begin = 0;
+    for(var k = end - 1; Input[k] != '('; k--){
+        begin = k-1;
+    }
+    var heartVal = calHeart(Input.slice(begin + 1,end - 1))
+    var tempHeart = Input.substr(begin,end)
+    Input.replace(tempHeart,heartVal)
+}
+//Now all things within () is solved, left us a fuction with only +-*/
+alert(InputR + '=' + calHeart(Input) + '\n' + 'Refresh the page to calculate another function!')
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>
